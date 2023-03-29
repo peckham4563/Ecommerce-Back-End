@@ -4,19 +4,42 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
-  // find all products
-  // be sure to include its associated Category and Tag data
-});
+router.get('/', async (req, res) => {
+  try {
+    const product = await Product.findAll({
+    include: [Category, {
+      model: Tag, 
+      through: ProductTag, 
+    }]
+  })
+
+  res.status(200).json(product)
+} catch(err) {
+    res.status(500).json(err)}
+  }
+);
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
-});
+  try {
+    const product = await Product.findByPk(req.params.id, 
+  {
+    include: [Category, {
+      model: Tag, 
+      through: ProductTag, 
+    }]
+  })
+
+  res.status(200).json(product)
+} catch(err) {
+    res.status(500).json(err)}
+  }
+);
 
 // create new product
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -25,10 +48,20 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
+
+    // try {
+    //   const product = await Product.create(req.params.id,)
+    //   res.status(200).json(product)
+    // }
+    // catch(err) {
+    //   res.status(500).json(err)}
+
+
   Product.create(req.body)
+  console.log(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      if (req.body.tagIds.length) {
+      if (req.body.tagIds && req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
             product_id: product.id,
@@ -45,7 +78,8 @@ router.post('/', (req, res) => {
       console.log(err);
       res.status(400).json(err);
     });
-});
+  });
+
 
 // update product
 router.put('/:id', (req, res) => {
