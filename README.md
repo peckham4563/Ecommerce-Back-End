@@ -1,4 +1,4 @@
-# E-commerce Back End Starter Code
+# E-commerce Back End
 
 ## Description
 This challenge was to build a back end for an e-commerce website given some starter code. With this starter code we were given a working Express.js API and it was configured to interact with MySQL using Sequelize. I created different models and seeds and used Insomnia as well with the creation of this repository. 
